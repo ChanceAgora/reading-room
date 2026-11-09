@@ -11,7 +11,7 @@ import sys
 
 from .install_defaults import python_range, supported_python
 from .local_server import server_address
-from .storage import read_json, writer
+from .storage import open_sqlite, read_json, writer
 
 COMMANDS = {'init', 'doctor', 'demo', 'autostart'}
 
@@ -66,7 +66,7 @@ def doctor(lib, *, explicit_root=False):
         ancestor = ancestor.parent
     check('private_state_writable', ancestor.is_dir() and os.access(ancestor, os.W_OK | os.X_OK), str(lib.state))
     try:
-        with sqlite3.connect(':memory:') as database:
+        with open_sqlite(':memory:') as database:
             database.execute('CREATE VIRTUAL TABLE diagnostic_fts USING fts5(text)')
         check('sqlite_fts5', True, f'SQLite {sqlite3.sqlite_version} supports FTS5')
     except sqlite3.Error:

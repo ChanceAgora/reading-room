@@ -36,3 +36,5 @@ include = ["/.gitignore", "/.github", "/frontend/.gitignore", "/src/book_library
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# A leaked SQLite connection is a bug (the server is long-running); fail fast.
+filterwarnings = ["error::ResourceWarning", "error::pytest.PytestUnraisableExceptionWarning"]
