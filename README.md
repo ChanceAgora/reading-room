@@ -33,6 +33,7 @@ The library opens in its own window; closing the window stops the server it star
 
 - Exact-text search, shelves, structured reading, and book contents.
 - Chicago notes-and-bibliography citation drafts, with missing or uncertain information marked for review.
+- An agent-friendly CLI: `library search QUERY --with-context --json` returns the interface's results with surrounding source text and citation drafts.
 - Editable metadata, research focuses, classifications, and separate research-use history.
 - Durable source selections and corrections that survive index rebuilds.
 

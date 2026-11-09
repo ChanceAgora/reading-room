@@ -22,6 +22,10 @@ def parser():
     intake.set_defaults(review_metadata=None)
     intake.add_argument('--local-only',action='store_true',help='Skip both paid stages for this intake')
     search=sub.add_parser('search'); search.add_argument('query'); search.add_argument('--focus'); search.add_argument('--mode',choices=['focused','balanced','exploratory'],default=None); search.add_argument('--filter',action='append',default=[]); search.add_argument('--limit',type=int,default=12); search.add_argument('--connections',type=int,default=5); engine=search.add_mutually_exclusive_group(); engine.add_argument('--engine',choices=['local','openai']); engine.add_argument('--exact',action='store_true',help='Wholly local exact-text search')
+    search.add_argument('--with-context',action='store_true',help='Attach surrounding source text and a citation draft to every hit (for agents; pair with --json)')
+    search.add_argument('--context',type=int,default=2,help='With --with-context: neighboring passages on each side (0-8, default 2)')
+    search.add_argument('--max-chars',type=int,default=6000,help='With --with-context: source characters per hit (default 6000)')
+    search.add_argument('--total-chars',type=int,default=60000,help='With --with-context: source characters across all hits (default 60000)')
     read=sub.add_parser('read'); read.add_argument('passage_id'); read.add_argument('--context',type=int,default=3); read.add_argument('--offset',type=int,default=0); read.add_argument('--max-chars',type=int,default=20000)
     contents=sub.add_parser('contents'); contents.add_argument('work_id'); contents.add_argument('--offset',type=int,default=0); contents.add_argument('--limit',type=int,default=100)
     unit=sub.add_parser('read-unit'); unit.add_argument('unit_id'); unit.add_argument('--anchor'); unit.add_argument('--cursor',type=int,default=0); unit.add_argument('--max-chars',type=int,default=200000)
@@ -71,7 +75,11 @@ def run(args):
             for f in args.filter:
                 if '=' not in f: raise ValueError('Filter syntax: subject=value, form=value, book=value, author=value, scripture=value, text_type=value')
                 k,v=f.split('=',1);filters[k]=v
-            return lib.search(args.query,focus=args.focus,mode=args.mode,filters=filters,limit=args.limit,connections=args.connections,engine='exact' if args.exact else args.engine)
+            options=dict(focus=args.focus,mode=args.mode,filters=filters,limit=args.limit,connections=args.connections,engine='exact' if args.exact else args.engine)
+            if args.with_context:
+                from .research import search_with_context
+                return search_with_context(lib,args.query,context=args.context,max_chars=args.max_chars,total_chars=args.total_chars,**options)
+            return lib.search(args.query,**options)
         case 'read': return lib.read(args.passage_id,args.context,offset=args.offset,max_chars=args.max_chars)
         case 'contents': return lib.contents(args.work_id,offset=args.offset,limit=args.limit)
         case 'read-unit': return lib.read_unit(args.unit_id,anchor=args.anchor,cursor=args.cursor,max_chars=args.max_chars)
@@ -133,7 +141,13 @@ def main():
         if result['holdings_gap']: print(result['holdings_gap']+'\n')
         for label,key in [('Direct results','direct'),('Possible connections','connections')]:
             print(label)
-            for i,h in enumerate(result[key],1): print(f"{i}. {h['title']}\n   {h['attribution']} · {h['heading']}\n   {h['text'][:500]}\n   {h['reason']}\n   {h['id']}\n")
+            for i,h in enumerate(result[key],1):
+                print(f"{i}. {h['title']}\n   {h['attribution']} · {h['heading']}\n   {h['text'][:500]}\n   {h['reason']}\n   {h['id']}")
+                if h.get('context'):
+                    for part in ('before','passage','after'):
+                        if h['context'][part]: print(f"   [{part}]\n   "+h['context'][part].replace('\n','\n   '))
+                if h.get('citation'): print('   Citation (draft): '+h['citation'].get('full_note',''))
+                print()
         print('\n'.join(result['warnings']))
     else: print(json.dumps(result,ensure_ascii=False,indent=2))
     return 0

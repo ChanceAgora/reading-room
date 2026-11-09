@@ -14,6 +14,14 @@ Use a specific phrase for a direct wording search. With semantic search enabled,
 ./bin/library books 'poetry' --json
 ```
 
+For agents and scripts, `--with-context` returns the same results as the interface's search, each with its surrounding source text and a citation draft, in one bounded JSON response:
+
+```sh
+./bin/library search 'memory and place' --with-context --json
+```
+
+Each hit's `context` separates the matched `passage` from the text `before` and `after` it. Its `citation` carries the notes, bibliography entry, and the warnings and missing fields to resolve before submission. See the [command reference](../skills/library-search/references/commands.md#search-with-context-in-one-call) for the size limits.
+
 Status checks file size and modification time without rereading every original. Synchronize after adding, changing, or removing files. Stale candidate passages are hidden rather than presented as current evidence.
 
 Search submission is explicit. Returning to a prior search restores available results without repeating a paid request. If the browser cannot retain that state, submit the search again intentionally.

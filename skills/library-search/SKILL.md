@@ -42,7 +42,10 @@ the browser. Neither skill invocation nor an available key authorizes AI setup.
    Use `search ... --exact --json` for wholly local retrieval, or when
    semantic service is unavailable. Check actual indexed coverage; a selected
    engine does not mean every new or changed book is already embedded.
-3. Follow a search result’s `read_url` or use `library read-unit UNIT_ID --json`
+3. Prefer `search ... --with-context --json` to get each hit's surrounding
+   source text and citation draft in one call (see
+   [commands](references/commands.md#search-with-context-in-one-call)).
+   Follow a search result’s `read_url` or use `library read-unit UNIT_ID --json`
    for its complete containing unit. Use `library contents WORK_ID --json`
    for the hierarchy. Follow explicit continuation cursors; one returned page
    may not contain the whole unit. For unresolved boundaries, use the labeled

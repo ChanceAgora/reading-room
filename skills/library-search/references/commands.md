@@ -17,6 +17,8 @@ library cite PASSAGE_ID --json
 library cite PASSAGE_ID --segment BLOCK_ID --json
 library search 'beatitudes' --filter text_type=commentary --json
 library search 'water and belonging' --exact --json
+library search 'water and belonging' --with-context --json
+library search 'water and belonging' --with-context --context 3 --max-chars 8000 --json
 library focus list --json
 library focus show FOCUS_ID --json
 library usage --json
@@ -30,6 +32,24 @@ wholly local. Inspect actual semantic coverage and pending updates rather than
 assuming engine selection guarantees complete coverage. Review each result's
 reason and limitations. Explicit filters narrow eligibility; they can exclude books with
 unknown metadata, so omit them when merely expressing a preference.
+
+## Search with context in one call
+
+`--with-context` returns the same hits, order, reasons, limitations, and
+warnings as the interface's search. Each hit also gets a `context` object:
+`before`, `passage` (the matched text), and `after` are plain source text.
+`section`, `location`, and `previous_passage`/`next_passage` are included for
+navigation. Each hit also gets a `citation` object with the full note, short
+note, bibliography, `ready`, `needs_review`, `missing_fields`, and `warnings`.
+It is a draft until those warnings are resolved. Engine defaults are those of
+ordinary search; add `--exact` for wholly local retrieval.
+
+Output is bounded: `--context` neighboring passages per side (0–8, default 2),
+`--max-chars` per hit (default 6000), and `--total-chars` across hits (default
+60000). Direct hits are filled first. A hit past the total budget has
+`context: null` and `context_omitted`. A hit whose source changed after the
+search has `context_error` and, usually, `citation_error`; synchronize before
+relying on it. Use `library read` or `library read-unit` for more text.
 
 ## Passage citations
 
