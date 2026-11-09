@@ -4,18 +4,18 @@ The first run is local and requires no API key. You will build the interface, ch
 
 ## 1. Check prerequisites
 
-Use macOS with Git, Python 3.12, and a supported Node.js version available in your terminal. **Node 24.15.0 or newer within 24.x is recommended.** The locked frontend dependencies support Node **22.22.2+ within 22.x**, **24.15.0+ within 24.x**, or **26.0.0 and newer**; Node 23 and 25 are outside that range.
+Use macOS with Git, Python 3.12–3.15, and a supported Node.js version available in your terminal. **Node 24.15.0 or newer within 24.x is recommended.** The locked frontend dependencies support Node **22.22.2+ within 22.x**, **24.15.0+ within 24.x**, or **26.0.0 and newer**; Node 23 and 25 are outside that range.
 
 Check the versions:
 
 ```sh
 git --version
-python3.12 --version
+python3 --version
 node --version
 npm --version
 ```
 
-If a command is missing, install it first using the [Git download guidance](https://git-scm.com/downloads/mac), [Python downloads](https://www.python.org/downloads/macos/), or [Node.js downloads](https://nodejs.org/en/download). Setup reports missing or incompatible prerequisites; it does not silently install system software. The supported Python version for this preview is 3.12.
+If a command is missing, install it first using the [Git download guidance](https://git-scm.com/downloads/mac), [Python downloads](https://www.python.org/downloads/macos/), or [Node.js downloads](https://nodejs.org/en/download). Setup reports missing or incompatible prerequisites; it does not silently install system software. Supported Python versions are 3.12 through 3.15; setup uses the newest of `python3.15`, `python3.14`, `python3.13`, or `python3.12` found on your `PATH`. On Python 3.15, one locked dependency (`numkong`, used by the vector index) is built from source, which needs the Xcode Command Line Tools (`xcode-select --install`).
 
 ## 2. Clone and set up
 

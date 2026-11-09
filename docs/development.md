@@ -1,6 +1,6 @@
 # Development
 
-The supported development environment is macOS, Python 3.12, and Node.js 24.15.0 or newer within 24.x (recommended). The locked frontend also permits 22.22.2+ within 22.x or 26.0.0 and newer, matching the package engine range. Start with [setup](quickstart.md), then install the locked development dependencies using the commands below.
+The supported development environment is macOS, Python 3.12–3.15, and Node.js 24.15.0 or newer within 24.x (recommended). The locked frontend also permits 22.22.2+ within 22.x or 26.0.0 and newer, matching the package engine range. Start with [setup](quickstart.md), then install the locked development dependencies using the commands below.
 
 ## Architecture
 

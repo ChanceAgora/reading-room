@@ -4,7 +4,7 @@ This is a source-installed macOS technical preview, maintained as a personal pro
 
 ## Supported scope
 
-- Python 3.12 and Node.js 22.22.2+ within 22.x, 24.15.0+ within 24.x, or 26.0.0+ for source setup/builds; 24.x is recommended. Normal use runs the Python server.
+- Python 3.12–3.15 and Node.js 22.22.2+ within 22.x, 24.15.0+ within 24.x, or 26.0.0+ for source setup/builds; 24.x is recommended. Normal use runs the Python server.
 - Local EPUB and DOCX sources, including supported split Word exports.
 - Exact-text retrieval and optional OpenAI `text-embedding-3-large` semantic retrieval.
 - Optional evidence-backed metadata review, with provisional corrections and manual verification.

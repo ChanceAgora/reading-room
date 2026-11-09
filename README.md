@@ -10,7 +10,7 @@ Browse the complete [skills and their reference guides](skills/README.md) direct
 
 ## Try it
 
-You need Git, **Python 3.12**, and a supported Node.js version; **Node 24.15.0 or newer within 24.x** is recommended. Node is needed to install/build the interface; normal operation uses one Python server. See the [quickstart](docs/quickstart.md) for the supported version ranges and expected results.
+You need Git, **Python 3.12–3.15**, and a supported Node.js version; **Node 24.15.0 or newer within 24.x** is recommended. Node is needed to install/build the interface; normal operation uses one Python server. See the [quickstart](docs/quickstart.md) for the supported version ranges and expected results.
 
 ```sh
 git clone https://github.com/sethwilsonUS/reading-room.git

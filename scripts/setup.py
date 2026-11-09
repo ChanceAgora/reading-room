@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -15,6 +16,19 @@ CHECKOUT = Path(__file__).resolve().parents[1]
 NODE_REQUIREMENT = 'Node.js 22.22.2+ within 22.x, 24.15.0+ within 24.x, or 26.0.0+ (24.x is recommended)'
 
 
+def _install_defaults():
+    # Load the dependency-free defaults module directly: the package's runtime
+    # dependencies are not installed yet when setup starts.
+    path = CHECKOUT / 'src' / 'book_library' / 'install_defaults.py'
+    spec = importlib.util.spec_from_file_location('reading_room_install_defaults', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+DEFAULTS = _install_defaults()
+
+
 def supported_node(value):
     match = re.fullmatch(r'v?(\d+)\.(\d+)\.(\d+)', value.strip())
     if not match:
@@ -25,8 +39,8 @@ def supported_node(value):
 
 
 def prerequisites(run=subprocess.run):
-    if sys.version_info[:2] != (3, 12):
-        raise ValueError('Use Python 3.12 to run setup.')
+    if not DEFAULTS.supported_python(sys.version_info):
+        raise ValueError(f'Use Python {DEFAULTS.python_range()} to run setup.')
     if sys.platform != 'darwin':
         raise ValueError('This technical preview supports macOS. Other platforms are experimental.')
     if not shutil.which('node') or not shutil.which('npm'):
@@ -83,8 +97,8 @@ def main():
         python = CHECKOUT / '.venv' / 'bin' / 'python'
         if python.exists():
             version = subprocess.run([str(python), '-c', 'import sys; print("%s.%s" % sys.version_info[:2])'], check=True, capture_output=True, text=True).stdout.strip()
-            if version != '3.12':
-                raise ValueError('The existing .venv is not Python 3.12. Preserve or remove it yourself before retrying; setup will not replace it.')
+            if not DEFAULTS.supported_python(tuple(map(int, version.split('.')))):
+                raise ValueError(f'The existing .venv uses unsupported Python {version}; Python {DEFAULTS.python_range()} is required. Preserve or remove it yourself before retrying; setup will not replace it.')
         else:
             subprocess.run([sys.executable, '-m', 'venv', str(CHECKOUT / '.venv')], check=True)
         has_pip = subprocess.run([str(python), '-c', 'import importlib.util; raise SystemExit(0 if importlib.util.find_spec("pip") else 1)'], check=False)
