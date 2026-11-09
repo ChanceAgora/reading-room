@@ -5,10 +5,17 @@ system interpreter before the checkout's virtual environment exists.
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 # Inclusive (major, minor) range. Keep in sync with `requires-python` in
 # pyproject.toml; tests/test_onboarding.py enforces that.
 MIN_PYTHON = (3, 12)
 MAX_PYTHON = (3, 15)
+
+
+def default_library_root() -> Path:
+    """Books directory used when no --root, LIBRARY_ROOT, or saved binding exists."""
+    return Path.home() / 'Documents' / 'Reading Room'
 
 
 def supported_python(version: tuple[int, ...]) -> bool:

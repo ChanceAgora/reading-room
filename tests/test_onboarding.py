@@ -130,6 +130,16 @@ def test_python_range_matches_package_metadata_and_launcher():
     assert f'for candidate in {expected}; do' in launcher
 
 
+def test_default_library_root_is_documents_folder_after_explicit_choices(tmp_path, monkeypatch):
+    monkeypatch.setenv('HOME', str(tmp_path))
+    monkeypatch.delenv('LIBRARY_ROOT', raising=False)
+    assert Library().root == (tmp_path / 'Documents' / 'Reading Room').resolve()
+    assert script('setup').DEFAULTS.default_library_root() == tmp_path / 'Documents' / 'Reading Room'
+    monkeypatch.setenv('LIBRARY_ROOT', str(tmp_path / 'env books'))
+    assert Library().root == (tmp_path / 'env books').resolve()
+    assert Library(tmp_path / 'explicit').root == (tmp_path / 'explicit').resolve()
+
+
 def test_synthetic_demo_search_read_cite_without_provider(tmp_path, monkeypatch):
     monkeypatch.setenv('OPENAI_API_KEY', 'dummy-do-not-use')
     from book_library import semantic, review_ai

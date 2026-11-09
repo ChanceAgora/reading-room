@@ -85,7 +85,7 @@ def main():
         if not isinstance(saved_data, dict):
             raise ValueError('Existing checkout setup state is not a JSON object; repair it before setup.')
         saved_root = saved_data.get('library_root')
-        root = args.root or os.environ.get('LIBRARY_ROOT') or saved_root or Path.home() / 'dev' / 'books'
+        root = args.root or os.environ.get('LIBRARY_ROOT') or saved_root or DEFAULTS.default_library_root()
         if not args.non_interactive and args.root is None and sys.stdin.isatty():
             value = input(f'Books directory [{root}]: ').strip()
             if value:

@@ -14,7 +14,7 @@ For the other two sibling skills, use `../library-search/scripts/library`.
 
 Run `library doctor --json` to confirm the configured root and setup. Root
 precedence is explicit `--root` before the command, `LIBRARY_ROOT`, the checkout's
-saved setup binding, then `~/dev/books`. Do not guess a personal path. The index
+saved setup binding, then `~/Documents/Reading Room`. Do not guess a personal path. The index
 is shared across projects; a book's original purpose does not restrict later
 use. Leave original books unchanged. Private records live in the root's `.library`.
 

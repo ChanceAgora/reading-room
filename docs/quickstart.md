@@ -25,7 +25,7 @@ cd reading-room
 ./bin/setup
 ```
 
-Setup creates a checkout-local `.venv`, installs locked dependencies, builds the browser interface, and asks where your book collection should live. Choose a folder outside this checkout. The default is `~/dev/books`; a different location is fine.
+Setup creates a checkout-local `.venv`, installs locked dependencies, builds the browser interface, and asks where your book collection should live. Choose a folder outside this checkout. The default is `~/Documents/Reading Room`; press Return to accept it or type any other folder.
 
 For an explicit location without an interactive prompt:
 
