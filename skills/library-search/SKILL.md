@@ -20,7 +20,7 @@ use. Leave original books unchanged. Private records live in the root's `.librar
 
 The browser normally uses `http://127.0.0.1:18765`; consult diagnostics for a
 custom address. Login startup is optional. Reuse an existing service or run
-`library serve` when needed, avoiding duplicate servers. The CLI works without
+`library serve` (browser) or `library app` (native window, which reuses a running server) when needed, avoiding duplicate servers. The CLI works without
 the browser. Neither skill invocation nor an available key authorizes AI setup.
 
 ## Search a changing shelf

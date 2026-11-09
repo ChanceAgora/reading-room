@@ -49,6 +49,8 @@ npm --prefix frontend run test:browser
 
 Python tests construct temporary synthetic EPUB/DOCX sources and mock providers. Pytest treats `ResourceWarning` as an error: open SQLite through `book_library.storage.open_sqlite` (or `connect` for read-only index generations) inside a `with` block, which closes the connection. The standard `sqlite3.connect` context manager only commits. Browser tests run a disposable server on port 18767 with paid work and the production intake worker disabled. They must not use real books or keys. Automated accessibility checks supplement, rather than replace, keyboard and screen-reader review.
 
+`library app` (`src/book_library/desktop.py`) wraps the same server in a pywebview window; see [ADR 0008](adr/0008-native-desktop-window.md). `Reading Room.app` is generated from `macos/` by `scripts/build_mac_app.py` during setup and is not committed. Rebuild it with `--force` after editing those sources if setup has not run.
+
 API type generation is offline: it exports the FastAPI schema without opening a real library or starting the worker. Commit the generated OpenAPI/TypeScript contracts with relevant API changes. Frontend build output under `src/book_library/frontend_dist` is generated locally and excluded from Git.
 
 ## Run the development servers

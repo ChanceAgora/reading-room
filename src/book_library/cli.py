@@ -39,6 +39,7 @@ def parser():
     usage=sub.add_parser('usage'); usage.add_argument('action',choices=['list','record','import'],default='list',nargs='?'); usage.add_argument('path',type=Path,nargs='?'); usage.add_argument('--event'); usage.add_argument('--limit',type=int,default=50)
     taxonomy=sub.add_parser('taxonomy'); taxonomy.add_argument('action',choices=['list','set']); taxonomy.add_argument('id',nargs='?'); taxonomy.add_argument('--value'); taxonomy.add_argument('--file',type=Path); taxonomy.add_argument('--query',default=''); taxonomy.add_argument('--offset',type=int,default=0)
     serve=sub.add_parser('serve'); serve.add_argument('--port',type=int,default=None,help=f'Override the configured local port (default {DEFAULT_PORT})')
+    app=sub.add_parser('app',help='Open the Reading Room in its own window; reuses a running server for this library'); app.add_argument('--port',type=int,default=None,help=f'Override the configured local port (default {DEFAULT_PORT})')
     for cmd in sub.choices.values(): cmd.add_argument('--json',action='store_true')
     return p
 
@@ -109,6 +110,9 @@ def run(args):
             host,port,base_url=server_address(lib,args.port)
             lib._local_base_url=base_url
             uvicorn.run(create_app(lib,enable_intake_worker=True),host=host,port=port)
+        case 'app':
+            from .desktop import run_app
+            run_app(lib,args.port)
 
 
 def main():

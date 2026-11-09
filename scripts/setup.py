@@ -108,6 +108,8 @@ def main():
         subprocess.run([str(python), '-m', 'pip', 'install', '--no-deps', '-e', str(CHECKOUT)], cwd=CHECKOUT, check=True)
         for operation in (['ci'], ['run', 'types'], ['run', 'build']):
             subprocess.run(['npm', '--prefix', str(CHECKOUT / 'frontend'), *operation], cwd=CHECKOUT, check=True)
+        # Double-clickable launcher at the checkout root (generated, ignored by Git).
+        subprocess.run([str(python), str(CHECKOUT / 'scripts' / 'build_mac_app.py')], cwd=CHECKOUT, check=True)
         subprocess.run([str(python), str(skill_manager), 'install', '--project'], check=True)
         subprocess.run([str(CHECKOUT / 'bin' / 'library'), '--root', str(root), 'init', '--json'], cwd=CHECKOUT, check=True)
         save_binding(CHECKOUT, root)
@@ -115,7 +117,7 @@ def main():
         print(result.stdout, end='')
         if not json.loads(result.stdout).get('ok'):
             raise ValueError('Setup finished, but diagnostics need attention. Fix the reported issue and rerun bin/library doctor --json.')
-        print('\nReady. Project skills are linked for Codex discovery; restart Codex if needed.\nTry bin/library demo, or start your library with bin/library serve.\nAI remains disabled for new libraries. Existing library permissions are preserved.')
+        print('\nReady. Project skills are linked for Codex discovery; restart Codex if needed.\nOpen your library by double-clicking Reading Room.app in this folder (or run bin/library app).\nTry bin/library demo first if you like; bin/library serve still serves the browser interface.\nAI remains disabled for new libraries. Existing library permissions are preserved.')
         return 0
     except (OSError, ValueError, subprocess.CalledProcessError) as exc:
         print(f'Setup stopped: {exc}', file=sys.stderr)

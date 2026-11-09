@@ -21,13 +21,13 @@ cd reading-room
 
 Open the address printed by the demo, normally [http://127.0.0.1:18768](http://127.0.0.1:18768). Search for **copper birds**. The demo uses invented text in a temporary library, with paid processing disabled. Press Control-C in the terminal to stop it.
 
-To open your own library afterward:
+To open your own library afterward, double-click **Reading Room.app** in the checkout folder (setup creates it), or run:
 
 ```sh
-./bin/library serve
+./bin/library app
 ```
 
-Open [http://127.0.0.1:18765](http://127.0.0.1:18765). Follow [your first book](docs/quickstart.md#add-your-first-book) to add a permitted EPUB or DOCX. The server listens on your computer only.
+The library opens in its own window; closing the window stops the server it started. The first launch may ask for permission to open files in your Documents folder. Prefer a browser tab? `./bin/library serve` serves the same interface at [http://127.0.0.1:18765](http://127.0.0.1:18765). Follow [your first book](docs/quickstart.md#add-your-first-book) to add a permitted EPUB or DOCX. The server listens on your computer only.
 
 ## What works locally
 
