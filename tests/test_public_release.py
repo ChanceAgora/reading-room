@@ -1,7 +1,9 @@
 """The publication audit checks staged bytes and modes, not a cleaned worktree."""
 import importlib.util
+import io
 from pathlib import Path
 import subprocess
+import tarfile
 
 import pytest
 
@@ -60,3 +62,21 @@ def test_index_rejects_outside_allowlist_and_empty_selection(audit):
 def test_private_state_is_excluded_even_inside_public_trees(audit, name):
     assert not audit.allowed(name)
     assert audit.allowed('.env.example')
+
+
+def test_source_archive_cannot_silently_omit_skill_sources(audit, tmp_path, monkeypatch, capsys):
+    skill = tmp_path / 'skills' / 'library-search' / 'SKILL.md'
+    skill.parent.mkdir(parents=True)
+    skill.write_text('The complete skill belongs in the source archive.')
+    archive = tmp_path / 'source.tar.gz'
+    for include_skill in (False, True):
+        with tarfile.open(archive, 'w:gz') as tar:
+            for name, data in [('README.md', b'Reading Room'), *([('skills/library-search/SKILL.md', skill.read_bytes())] if include_skill else [])]:
+                member = tarfile.TarInfo('reading-room/' + name)
+                member.size = len(data)
+                tar.addfile(member, io.BytesIO(data))
+        monkeypatch.setattr('sys.argv', ['check_public_release.py', '--archive', str(archive)])
+        assert audit.main() == (0 if include_skill else 1)
+        output = capsys.readouterr()
+        if not include_skill:
+            assert 'Source archive lacks skill file: skills/library-search/SKILL.md' in output.err

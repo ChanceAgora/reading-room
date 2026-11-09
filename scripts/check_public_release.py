@@ -99,6 +99,8 @@ def main():
                         continue
                     files[name] = member
                 errors += check(files, lambda n: archive.extractfile(files[n]).read())
+                required_skills = {name for name in candidates() if name.startswith('skills/')}
+                errors += [f'Source archive lacks skill file: {name}' for name in sorted(required_skills - files.keys())]
     elif args.candidates or args.list:
         names = candidates()
         errors = check(names, lambda n: (ROOT / n).read_bytes())

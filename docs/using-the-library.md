@@ -45,7 +45,7 @@ Choose **Cite this passage** or a reading unit's citation action for Chicago not
 
 Read the warnings. Unknown contributors, provisional publication facts, and missing page locators remain visible. An editor is not automatically the author of an essay. Extraction block numbers and reflowed screen positions are navigation aids, not printed page numbers.
 
-Verify the edition you used. Where an edition has no printed page markers, use a supported chapter or section locator rather than inventing a page. The [contributor guide](../.agents/skills/library-search/references/contributors.md) explains scoped credits; the [glossary](../GLOSSARY.md) distinguishes a reading unit, indexed passage, and contribution.
+Verify the edition you used. Where an edition has no printed page markers, use a supported chapter or section locator rather than inventing a page. The [contributor guide](../skills/library-search/references/contributors.md) explains scoped credits; the [glossary](../GLOSSARY.md) distinguishes a reading unit, indexed passage, and contribution.
 
 Exact quotation selection currently uses mouse highlighting. Select contiguous source text, choose **Cite selected text**, and confirm the reconstructed quotation. Saved selections use source coordinates and fingerprints; a changed source makes the old selection unavailable for review instead of moving it to similar wording. A dedicated keyboard/screen-reader range-selection workflow is not part of this preview. Passage and whole-unit citations remain separate routes.
 

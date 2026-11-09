@@ -57,6 +57,13 @@ def exercise(checkout, folder):
         return json.loads(result.stdout)
     call('init','--timezone','UTC')
     assert call('doctor')['ok']
+    for name in ('bookshare-find', 'bookshare-download', 'library-search'):
+        link = checkout / '.agents' / 'skills' / name
+        assert link.is_symlink() and link.resolve() == (checkout / 'skills' / name).resolve()
+        assert not link.readlink().is_absolute(), 'Project discovery links must move with the checkout'
+    launcher = checkout / '.agents' / 'skills' / 'library-search' / 'scripts' / 'library'
+    subprocess.run([str(launcher), '--root', str(root), 'status', '--json'],
+                   cwd=folder, env=env, check=True, capture_output=True, text=True)
     book = root/'Example Book'; book.mkdir()
     source = book/'Example.docx'
     write_book(source)

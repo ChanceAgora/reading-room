@@ -10,7 +10,7 @@ authorizations, cost records, and usage history across rebuilds and migrations.
 Prefer exact passages and explicit provenance over inferred metadata. Do not
 silently attribute anthology contents to volume editors. For intake, uncertain
 credits, and attribution parser work, read
-`.agents/skills/library-search/references/contributors.md`.
+`skills/library-search/references/contributors.md`.
 Inspect opening/closing bylines, contents, contributor keys, and credits with
 their actual scope, including split files. Keep authors, editors, translators,
 quoted people, and image creators distinct. Do not infer note ownership from

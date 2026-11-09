@@ -16,7 +16,7 @@ Use a synthetic EPUB/DOCX or describe the structural pattern whenever possible. 
 4. Run the relevant checks, including generated API types for interface changes. Keep source packages and Git publication boundaries intact.
 5. Describe the concrete problem, the resulting behavior, and what you verified in the pull request. State untested areas rather than presenting them as passed.
 
-Preserve the distinction between source evidence, provisional corrections, personal verification, and research use. Do not infer authorship from proximity or credit an entire anthology to its editor. Read the [contributor guide](.agents/skills/library-search/references/contributors.md) before changing attribution parsers.
+Preserve the distinction between source evidence, provisional corrections, personal verification, and research use. Do not infer authorship from proximity or credit an entire anthology to its editor. Read the [contributor guide](skills/library-search/references/contributors.md) before changing attribution parsers.
 
 UI changes need meaningful keyboard behavior and accessible labels/focus. Keep instructions readable without screenshots. Paid features must remain explicit, metered, resumable, and testable without real credentials; navigation and retries must not replay charges.
 

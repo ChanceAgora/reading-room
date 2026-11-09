@@ -62,6 +62,10 @@ def main():
     args = parser.parse_args()
     try:
         prerequisites()
+        # Check all discovery destinations before installing dependencies or
+        # initializing a library; customized project skills are never replaced.
+        skill_manager = CHECKOUT / 'scripts' / 'manage_skills.py'
+        subprocess.run([sys.executable, str(skill_manager), 'check', '--project'], check=True)
         saved = CHECKOUT / '.reading-room' / 'local.json'
         saved_data = json.loads(saved.read_text()) if saved.exists() else {}
         if not isinstance(saved_data, dict):
@@ -90,13 +94,14 @@ def main():
         subprocess.run([str(python), '-m', 'pip', 'install', '--no-deps', '-e', str(CHECKOUT)], cwd=CHECKOUT, check=True)
         for operation in (['ci'], ['run', 'types'], ['run', 'build']):
             subprocess.run(['npm', '--prefix', str(CHECKOUT / 'frontend'), *operation], cwd=CHECKOUT, check=True)
+        subprocess.run([str(python), str(skill_manager), 'install', '--project'], check=True)
         subprocess.run([str(CHECKOUT / 'bin' / 'library'), '--root', str(root), 'init', '--json'], cwd=CHECKOUT, check=True)
         save_binding(CHECKOUT, root)
         result = subprocess.run([str(CHECKOUT / 'bin' / 'library'), 'doctor', '--json'], cwd=CHECKOUT, check=True, text=True, capture_output=True)
         print(result.stdout, end='')
         if not json.loads(result.stdout).get('ok'):
             raise ValueError('Setup finished, but diagnostics need attention. Fix the reported issue and rerun bin/library doctor --json.')
-        print('\nReady. Try bin/library demo, or start your library with bin/library serve.\nAI remains disabled for new libraries. Existing library permissions are preserved.')
+        print('\nReady. Project skills are linked for Codex discovery; restart Codex if needed.\nTry bin/library demo, or start your library with bin/library serve.\nAI remains disabled for new libraries. Existing library permissions are preserved.')
         return 0
     except (OSError, ValueError, subprocess.CalledProcessError) as exc:
         print(f'Setup stopped: {exc}', file=sys.stderr)

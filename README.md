@@ -4,6 +4,8 @@ A local research library for finding passages, reading them in context, and keep
 
 The Reading Room combines a Python indexing service, a browser interface, and Codex skills for finding and downloading authorized Bookshare copies and working with your library. It preserves contributor roles, source locations, uncertain metadata, and your corrections instead of treating every search result as a verified citation.
 
+Browse the complete [skills and their reference guides](skills/README.md) directly in the repository. Setup links them for Codex to discover in this project.
+
 **v0.1.0 is a macOS technical preview.** You install it from source. Books and private library records stay outside this repository. No books, Bookshare membership, Codex access, or OpenAI API usage are included.
 
 ## Try it

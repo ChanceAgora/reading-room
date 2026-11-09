@@ -207,7 +207,7 @@ def test_skill_bundle_preflight_idempotency_and_safe_uninstall(tmp_path):
     manager = script('manage_skills')
     checkout = tmp_path / 'source checkout'
     for name in manager.NAMES:
-        folder = checkout / '.agents' / 'skills' / name
+        folder = checkout / 'skills' / name
         folder.mkdir(parents=True)
         (folder / 'SKILL.md').write_text(name)
     home = tmp_path / 'home'
@@ -234,7 +234,7 @@ def test_legacy_personal_skill_is_not_shadowed(tmp_path, monkeypatch):
     monkeypatch.delenv('CODEX_HOME', raising=False)
     checkout = tmp_path / 'checkout'
     for name in manager.NAMES:
-        folder = checkout / '.agents' / 'skills' / name
+        folder = checkout / 'skills' / name
         folder.mkdir(parents=True)
         (folder / 'SKILL.md').write_text(name)
     home = tmp_path / 'home'
@@ -246,9 +246,9 @@ def test_legacy_personal_skill_is_not_shadowed(tmp_path, monkeypatch):
 
 def test_symlinked_skill_launcher_works_from_other_directory(tmp_path):
     checkout = tmp_path / 'source checkout'
-    scripts = checkout / '.agents' / 'skills' / 'library-search' / 'scripts'
+    scripts = checkout / 'skills' / 'library-search' / 'scripts'
     scripts.mkdir(parents=True)
-    shutil.copy2(CHECKOUT / '.agents' / 'skills' / 'library-search' / 'scripts' / 'library', scripts / 'library')
+    shutil.copy2(CHECKOUT / 'skills' / 'library-search' / 'scripts' / 'library', scripts / 'library')
     (checkout / 'pyproject.toml').write_text('')
     (checkout / 'bin').mkdir()
     executable = checkout / 'bin' / 'library'
@@ -261,3 +261,75 @@ def test_symlinked_skill_launcher_works_from_other_directory(tmp_path):
     other.mkdir()
     result = subprocess.run([str(installed / 'library-search' / 'scripts' / 'library'), '--root', '/books with spaces', 'status', '--json'], cwd=other, capture_output=True, text=True, check=True)
     assert result.stdout.splitlines() == ['--root', '/books with spaces', 'status', '--json']
+
+
+def skill_checkout(folder):
+    manager = script('manage_skills')
+    for name in manager.NAMES:
+        source = folder / 'skills' / name
+        source.mkdir(parents=True)
+        (source / 'SKILL.md').write_text(name)
+    return manager
+
+
+def test_project_discovery_links_move_with_checkout_and_install_idempotently(tmp_path):
+    checkout = tmp_path / 'source checkout'
+    manager = skill_checkout(checkout)
+    assert manager.manage('check', checkout=checkout, project=True)['ready']
+    assert not (checkout / '.agents').exists()
+    assert manager.manage('install', checkout=checkout, project=True)['created'] == 3
+    assert manager.manage('install', checkout=checkout, project=True)['created'] == 0
+    for name in manager.NAMES:
+        link = checkout / '.agents' / 'skills' / name
+        assert link.readlink() == Path('../../skills') / name
+        assert link.resolve() == checkout / 'skills' / name
+    moved = tmp_path / 'moved checkout'
+    checkout.rename(moved)
+    assert all(row['state'] == 'managed' for row in manager.manage('status', checkout=moved, project=True)['skills'])
+    assert len(manager.manage('uninstall', checkout=moved, project=True)['removed']) == 3
+    assert manager.manage('uninstall', checkout=moved, project=True)['removed'] == []
+    assert all((moved / 'skills' / name / 'SKILL.md').is_file() for name in manager.NAMES)
+
+
+def test_project_preflight_preserves_customized_skill_and_creates_no_other_links(tmp_path):
+    checkout = tmp_path / 'checkout'
+    manager = skill_checkout(checkout)
+    destination = checkout / '.agents' / 'skills'
+    custom = destination / 'bookshare-download'
+    custom.mkdir(parents=True)
+    (custom / 'SKILL.md').write_text('Customized instructions')
+    for action in ('check', 'install'):
+        with pytest.raises(ValueError, match='Nothing was changed'):
+            manager.manage(action, checkout=checkout, project=True)
+    assert list(destination.iterdir()) == [custom]
+    assert (custom / 'SKILL.md').read_text() == 'Customized instructions'
+
+
+@pytest.mark.parametrize('relative', ['.agents', '.agents/skills'])
+def test_project_discovery_never_writes_through_external_parent_symlinks(tmp_path, relative):
+    checkout = tmp_path / 'checkout'
+    manager = skill_checkout(checkout)
+    external = tmp_path / 'personal skills'
+    external.mkdir()
+    target = checkout / relative
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.symlink_to(external, target_is_directory=True)
+    with pytest.raises(ValueError, match='left untouched'):
+        manager.manage('install', checkout=checkout, project=True)
+    assert list(external.iterdir()) == []
+    assert target.is_symlink()
+
+
+def test_setup_project_links_restore_older_managed_global_links(tmp_path):
+    checkout = tmp_path / 'checkout'
+    manager = skill_checkout(checkout)
+    home = tmp_path / 'home'
+    destination = home / '.agents' / 'skills'
+    destination.mkdir(parents=True)
+    for name in manager.NAMES:
+        (destination / name).symlink_to(checkout / '.agents' / 'skills' / name, target_is_directory=True)
+    manager.manage('install', checkout=checkout, project=True)
+    assert manager.manage('install', checkout=checkout, home=home)['created'] == 0
+    assert all(row['state'] == 'managed' for row in manager.manage('status', checkout=checkout, home=home)['skills'])
+    assert len(manager.manage('uninstall', checkout=checkout, home=home)['removed']) == 3
+    assert all((checkout / 'skills' / name / 'SKILL.md').is_file() for name in manager.NAMES)

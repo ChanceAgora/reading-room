@@ -14,7 +14,7 @@ CHECKOUT = Path(__file__).resolve().parents[1]
 def inspect_bundle(checkout, destination, *, legacy_roots=()):
     records = []
     for name in NAMES:
-        source = checkout / '.agents' / 'skills' / name
+        source = checkout / 'skills' / name
         target = destination / name
         if not (source / 'SKILL.md').is_file():
             raise ValueError(f'The source skill {name} is incomplete. Restore the checkout before installing.')
@@ -32,31 +32,41 @@ def inspect_bundle(checkout, destination, *, legacy_roots=()):
     return records
 
 
-def manage(action, *, checkout=CHECKOUT, destination=None, home=None):
+def manage(action, *, checkout=CHECKOUT, destination=None, home=None, project=False):
     home = Path(home or Path.home())
     default = home / '.agents' / 'skills'
-    destination = Path(destination or default).expanduser().absolute()
     checkout = Path(checkout).resolve()
+    if project:
+        if destination is not None:
+            raise ValueError('Choose project discovery or an explicit destination, not both.')
+        destination = checkout / '.agents' / 'skills'
+        for folder in (destination.parent, destination):
+            if folder.is_symlink() or (folder.exists() and not folder.is_dir()):
+                raise ValueError('Project skill discovery needs ordinary .agents/skills directories inside the checkout. Existing paths were left untouched.')
+    destination = Path(destination or default).expanduser().absolute()
     legacy = [Path(os.environ.get('CODEX_HOME', str(home / '.codex'))) / 'skills'] if destination == default else []
     records = inspect_bundle(checkout, destination, legacy_roots=legacy)
     if action == 'status':
         return {'destination': str(destination), 'skills': records}
-    if action == 'install':
+    if action in {'check', 'install'}:
         if any(item['state'] == 'conflict' or item['other_installed_copies'] for item in records):
             conflicts = ', '.join(item['name'] for item in records if item['state'] == 'conflict' or item['other_installed_copies'])
             raise ValueError(f'Existing skill copies conflict: {conflicts}. Nothing was changed. Use status to inspect them; preserve customized skills and resolve duplicates explicitly.')
+        if action == 'check':
+            return {'ready': True, 'destination': str(destination)}
         destination.mkdir(parents=True, exist_ok=True)
         created = []
         try:
             for item in records:
                 if item['state'] == 'absent':
                     target = Path(item['destination'])
-                    target.symlink_to(item['source'], target_is_directory=True)
+                    source = os.path.relpath(item['source'], destination) if project else item['source']
+                    target.symlink_to(source, target_is_directory=True)
                     created.append(target)
         except OSError:
             for target in created:
                 # Roll back only links just created by this invocation.
-                if target.is_symlink() and target.resolve() == (checkout / '.agents' / 'skills' / target.name).resolve():
+                if target.is_symlink() and target.resolve() == (checkout / 'skills' / target.name).resolve():
                     target.unlink()
             raise
         return {'installed': True, 'created': len(created), 'destination': str(destination),
@@ -69,16 +79,18 @@ def manage(action, *, checkout=CHECKOUT, destination=None, home=None):
                 removed.append(item['name'])
         return {'removed': removed, 'preserved': [item['name'] for item in records if item['state'] == 'conflict'],
                 'message': 'Only matching managed symlinks were removed. Books, settings, source checkout, and unrelated skills were retained.'}
-    raise ValueError('Choose install, status, or uninstall.')
+    raise ValueError('Choose check, install, status, or uninstall.')
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=['install', 'status', 'uninstall'])
-    parser.add_argument('--destination', type=Path)
+    parser.add_argument('action', choices=['check', 'install', 'status', 'uninstall'])
+    location = parser.add_mutually_exclusive_group()
+    location.add_argument('--destination', type=Path)
+    location.add_argument('--project', action='store_true', help='Manage checkout-local Codex discovery links instead of user-wide links')
     args = parser.parse_args()
     try:
-        print(json.dumps(manage(args.action, destination=args.destination), indent=2))
+        print(json.dumps(manage(args.action, destination=args.destination, project=args.project), indent=2))
         return 0
     except (OSError, ValueError) as exc:
         print(json.dumps({'error': str(exc)}), file=sys.stderr)

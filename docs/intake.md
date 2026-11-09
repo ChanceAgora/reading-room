@@ -72,17 +72,17 @@ A small local-copy example is:
 ./bin/library intake --path "/absolute/library/Example Book" --context "/absolute/private/context.json" --local-only --json
 ```
 
-Supplied metadata is a claim, not automatic verification. The [intake reference](../.agents/skills/library-search/references/intake.md) documents richer context, including file mappings and evidence.
+Supplied metadata is a claim, not automatic verification. The [intake reference](../skills/library-search/references/intake.md) documents richer context, including file mappings and evidence.
 
 For a split DOCX export, keep all parts of the selected copy together and supply their exact order when names are insufficient. Do not mix an EPUB and DOCX alternative or multiple editions in one intake. Ambiguous copies and unexpected adjacent files need an explicit selection; the library does not guess which to merge.
 
-The [inspection helper](../.agents/skills/bookshare-download/scripts/inspect_book.py) can examine DOCX, EPUB, and download ZIP packages without modifying them. A ZIP download is a container: place its supported book members before intake, preserving their relationship to the retained archive. The helper alone does not place files or establish that every page is complete.
+The [inspection helper](../skills/bookshare-download/scripts/inspect_book.py) can examine DOCX, EPUB, and download ZIP packages without modifying them. A ZIP download is a container: place its supported book members before intake, preserving their relationship to the retained archive. The helper alone does not place files or establish that every page is complete.
 
 ## Bookshare-assisted intake
 
 Use the [Bookshare skills](codex.md#bookshare-workflow) to find a copy, authorize a download, inspect the actual export, and prepare intake context. A catalog title or ISBN may describe a related print format rather than the accessible copy; preserve discrepancies instead of silently replacing the book's own evidence.
 
-Contributor checking has its own [guide](../.agents/skills/library-search/references/contributors.md). Look at bylines, contents, contributor keys, and scoped credits. A volume editor is not automatically the author of a chapter, poem, or commentary. Missing credits do not block healthy text indexing.
+Contributor checking has its own [guide](../skills/library-search/references/contributors.md). Look at bylines, contents, contributor keys, and scoped credits. A volume editor is not automatically the author of a chapter, poem, or commentary. Missing credits do not block healthy text indexing.
 
 ## Pause, recover, and undo
 

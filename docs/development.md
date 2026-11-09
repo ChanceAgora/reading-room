@@ -22,6 +22,8 @@ Codex skills / library CLI / Reading Room UI
 
 Original book packages are immutable inputs. Durable records under the selected library's `.library` are separate from derived text/index generations. A writer lock serializes publication of durable changes; completed index generations publish atomically. Review proposals, saved corrections, personal verification, and usage history have distinct meanings. Read the [glossary](../GLOSSARY.md) and [architectural decisions](adr/0001-source-structure-overlay.md) before changing those relationships.
 
+The complete skill sources live in [`skills/`](../skills/README.md). Setup creates ignored relative links under `.agents/skills` for Codex discovery. Edit the originals; keep generated discovery links out of Git and source archives.
+
 ## Install development dependencies
 
 ```sh

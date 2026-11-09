@@ -30,7 +30,9 @@ artifacts = ["src/book_library/frontend_dist/**"]
 exclude = ["**/node_modules", "**/__pycache__", "**/.pytest_cache", "/.venv", "/frontend/test-results", "/frontend/playwright-report"]
 
 [tool.hatch.build.targets.sdist]
-include = ["/.gitignore", "/.github", "/frontend/.gitignore", "/src/book_library", "/frontend/src", "/frontend/public", "/frontend/tests", "/frontend/*.json", "/frontend/*.ts", "/frontend/*.js", "/frontend/.prettierignore", "/frontend/index.html", "/scripts/dev_web.py", "/scripts/export_web_schema.py", "/scripts/test_web_server.py", "/scripts/manage_skills.py", "/scripts/setup.py", "/scripts/run_library.py", "/scripts/check_public_release.py", "/scripts/check_docs.py", "/scripts/clean_install_smoke.py", "/scripts/dependency_notices.py", "/tests", "/bin", "/docs", "/README.md", "/GLOSSARY.md", "/AGENTS.md", "/requirements.lock.txt", "/requirements-dev.lock.txt", "/.agents/skills", "/examples", "/LICENSE", "/NOTICE.md", "/CONTRIBUTING.md", "/SECURITY.md", "/.env.example", "/.release-files.json"]
+# Prune generated discovery links before Hatch deduplicates their target inodes.
+skip-excluded-dirs = true
+include = ["/.gitignore", "/.github", "/frontend/.gitignore", "/src/book_library", "/frontend/src", "/frontend/public", "/frontend/tests", "/frontend/*.json", "/frontend/*.ts", "/frontend/*.js", "/frontend/.prettierignore", "/frontend/index.html", "/scripts/dev_web.py", "/scripts/export_web_schema.py", "/scripts/test_web_server.py", "/scripts/manage_skills.py", "/scripts/setup.py", "/scripts/run_library.py", "/scripts/check_public_release.py", "/scripts/check_docs.py", "/scripts/clean_install_smoke.py", "/scripts/dependency_notices.py", "/tests", "/bin", "/docs", "/README.md", "/GLOSSARY.md", "/AGENTS.md", "/requirements.lock.txt", "/requirements-dev.lock.txt", "/skills", "/examples", "/LICENSE", "/NOTICE.md", "/CONTRIBUTING.md", "/SECURITY.md", "/.env.example", "/.release-files.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

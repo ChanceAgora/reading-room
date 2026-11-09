@@ -20,7 +20,16 @@ Signing into Codex does not configure an API key in Reading Room. Signing into B
 4. Allow the file access needed for this checkout and your books directory when Codex asks.
 5. Look for `bookshare-find`, `bookshare-download`, and `library-search` in the skill picker. Restart or refresh skill discovery if newly added skills are not visible.
 
-The repository stores the skills together under `.agents/skills`. Each includes its reference material; the download skill also includes a package-inspection helper. Their launcher finds this checkout's Python environment and saved library path without requiring shell activation. Codex's [official skill documentation](https://learn.chatgpt.com/docs/build-skills#where-to-save-skills) describes project and user discovery.
+The complete, browsable originals live in [`skills/`](../skills/README.md). Each includes its reference material; the download skill also includes a package-inspection helper. Setup creates relative links under `.agents/skills` for project discovery, without installing user-wide skills. Their launcher finds this checkout's Python environment and saved library path without requiring shell activation. Codex's [official skill documentation](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills) describes project and user discovery, including symlinked skill folders.
+
+To inspect or recreate just the project links, without rerunning dependency installation:
+
+```sh
+.venv/bin/python scripts/manage_skills.py status --project
+.venv/bin/python scripts/manage_skills.py install --project
+```
+
+Project links are generated local state, excluded from Git and source packages. Existing customized project skills are reported as conflicts and preserved. Edit the originals in `skills/` when contributing changes.
 
 Try a prompt such as:
 
@@ -41,7 +50,7 @@ The installer uses sibling symlinks in `~/.agents/skills` by default. It checks 
 
 For an explicitly chosen skill directory, add `--destination /absolute/path/to/skills`. Avoid installing duplicate copies under different user skill roots. The installer cannot choose which customized skill you want Codex to use.
 
-Updating this checkout updates its linked skills. After moving the checkout, reinstall the links deliberately. To remove only this installation's managed links:
+Updating this checkout updates its linked skills. When updating from the initial preview layout, rerun setup (or `install --project`) first; it restores discovery paths used by older user-level links. After moving the checkout, reinstall the user-level links deliberately. Project links use relative paths and move with the checkout. To remove only this installation's managed user-level links:
 
 ```sh
 .venv/bin/python scripts/manage_skills.py uninstall

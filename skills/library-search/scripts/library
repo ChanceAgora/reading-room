@@ -2,7 +2,7 @@
 set -eu
 # Resolve directory symlinks physically so this also works from ~/.agents/skills.
 READING_ROOM_SKILL_DIR=$(CDPATH= cd -P -- "$(dirname -- "$0")" && pwd)
-READING_ROOM_CHECKOUT=$(CDPATH= cd -P -- "$READING_ROOM_SKILL_DIR/../../../.." && pwd)
+READING_ROOM_CHECKOUT=$(CDPATH= cd -P -- "$READING_ROOM_SKILL_DIR/../../.." && pwd)
 if [ ! -f "$READING_ROOM_CHECKOUT/pyproject.toml" ] || [ ! -x "$READING_ROOM_CHECKOUT/bin/library" ]; then
   echo 'The Reading Room skill cannot locate its source checkout. Reinstall the complete skill bundle from the repository.' >&2
   exit 1

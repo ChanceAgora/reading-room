@@ -33,7 +33,7 @@ For an explicit location without an interactive prompt:
 ./bin/setup --root "$HOME/Books/ReadingRoom" --non-interactive
 ```
 
-Setup stores the chosen path in ignored `.reading-room/local.json`. The books folder contains a private `.library` directory for settings, indexes, corrections, and history. Do not add either directory to Git.
+Setup stores the chosen path in ignored `.reading-room/local.json` and links the originals in [`skills/`](../skills/README.md) into ignored `.agents/skills` for Codex project discovery. User-wide skill installation remains optional. The books folder contains a private `.library` directory for settings, indexes, corrections, and history. Do not add these local-state directories to Git.
 
 You do not need to activate the virtual environment for `./bin/library` commands. Running setup again preserves existing library records and settings. Setup does not start the server, install login startup, scan books, or enable paid features.
 
