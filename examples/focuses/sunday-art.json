@@ -1,0 +1,16 @@
+{
+  "id": "sunday-art",
+  "name": "Sunday Thread · Art and quotations",
+  "description": "Art, poetry, and literary connections with theological context.",
+  "subjects": [
+    "art-history",
+    "poetry",
+    "literature"
+  ],
+  "forms": [
+    "poem",
+    "caption",
+    "quotation"
+  ],
+  "breadth": "exploratory"
+}

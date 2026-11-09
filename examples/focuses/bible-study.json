@@ -1,0 +1,13 @@
+{
+  "id": "bible-study",
+  "name": "Bible study",
+  "description": "Text, history, interpretation, and pastoral questions.",
+  "subjects": [
+    "biblical-studies",
+    "theology"
+  ],
+  "forms": [
+    "commentary"
+  ],
+  "breadth": "balanced"
+}

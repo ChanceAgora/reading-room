@@ -1,0 +1,15 @@
+{
+  "id": "substack",
+  "name": "Substack preparation",
+  "description": "Source-grounded writing and surprising but defensible connections.",
+  "subjects": [
+    "theology",
+    "art-history",
+    "literature"
+  ],
+  "forms": [
+    "essay",
+    "poem"
+  ],
+  "breadth": "exploratory"
+}

@@ -1,0 +1,9 @@
+# React owns the Reading Room interface
+
+The Reading Room uses a React and TypeScript single-page interface built with Vite, styled with Tailwind, and enhanced with React Aria controls. FastAPI remains the library boundary and serves the compiled frontend on loopback, normally port 18765. We chose a direct replacement of the Jinja interface, preserving its visual identity and research workflows rather than maintaining two frontends. JavaScript is required; ordinary use needs one Python service. A macOS LaunchAgent is optional. Source installation builds the frontend with Node; normal server operation does not require Node.
+
+Typed `/api/ui/` views reuse the existing Python operations and preserve their attribution, verification, revision, budgeting, and durability rules. Existing `/api/` contracts and browser links remain compatible. Source books stay outside the application; structured source text is rendered as data. OpenAPI-derived TypeScript types document the HTTP boundary. A document-specific CSP nonce supports library-injected styles without permitting arbitrary inline source content.
+
+TanStack Query owns local API caching, but paid actions remain explicit submissions. There are no automatic retries, progress polling, reconnect refreshes, or window-focus refreshes. Search snapshots restore previous results without executing another paid request. Review draft autosave is retained because a local draft is distinct from an applied correction; final application still requires Save changes. Automatic progress updates and a dedicated keyboard/screen-reader quotation-selection workflow remain follow-up work.
+
+Vite development keeps the public frontend on port 18765 and proxies to a worker-disabled API on 18766. The development API keeps generated public links on 18765. Tests use disposable libraries and fake providers; the production service retains its existing authorized intake worker.

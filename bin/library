@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+LIBRARY_APP_DIR=$(CDPATH= cd -P -- "$(dirname -- "$0")/.." && pwd)
+if [ ! -x "$LIBRARY_APP_DIR/.venv/bin/python" ]; then
+  echo 'Reading Room is not installed in this checkout. Run ./bin/setup first.' >&2
+  exit 1
+fi
+exec "$LIBRARY_APP_DIR/.venv/bin/python" "$LIBRARY_APP_DIR/scripts/run_library.py" "$@"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bookshare Download"
+  short_description: "Download, rename, and index books for research"
+  default_prompt: "Use $bookshare-download to save the books I selected in my configured Reading Room library, with descriptive filenames, useful text formats, and completed library intake."

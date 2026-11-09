@@ -1,0 +1,12 @@
+{
+  "id": "efm",
+  "name": "Education for Ministry",
+  "description": "Scripture, theology, church history, and reflection.",
+  "subjects": [
+    "biblical-studies",
+    "theology",
+    "history"
+  ],
+  "forms": [],
+  "breadth": "balanced"
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shared Library Search"
+  short_description: "Search local books and follow useful connections"
+  default_prompt: "Use $library-search to find and verify useful passages for this research question."

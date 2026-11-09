@@ -1,0 +1,15 @@
+{
+  "id": "enneagram-workshop",
+  "name": "Enneagram workshop",
+  "description": "Prefer Enneagram holdings; explore formation and group learning. Missing holdings remain visible.",
+  "subjects": [
+    "enneagram"
+  ],
+  "forms": [],
+  "related_subjects": [
+    "spiritual-formation",
+    "education",
+    "psychology"
+  ],
+  "breadth": "focused"
+}

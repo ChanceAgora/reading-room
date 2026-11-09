@@ -1,0 +1,58 @@
+name: Verify
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  macos:
+    name: macOS source release
+    runs-on: macos-latest
+    timeout-minutes: 30
+    env:
+      OPENAI_API_KEY: ''
+      LIBRARY_OPENAI_ENV: ''
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-python@v7.1.0
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '24.15.0'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Source setup without personal configuration
+        run: ./bin/setup --root "$RUNNER_TEMP/Reading Room books" --non-interactive
+      - name: Development dependencies
+        run: .venv/bin/python -m pip install -r requirements-dev.lock.txt
+      - name: Public boundary and documentation
+        run: |
+          .venv/bin/python scripts/check_public_release.py
+          .venv/bin/python scripts/check_docs.py
+      - name: Python contracts
+        run: .venv/bin/python -m pytest -q
+      - name: Frontend contracts
+        run: |
+          npm --prefix frontend run typecheck
+          npm --prefix frontend run lint
+          npm --prefix frontend test
+          npm --prefix frontend run types
+          git diff --exit-code -- frontend/openapi.json frontend/src/generated/api.d.ts
+      - name: Browser workflows
+        run: |
+          npm --prefix frontend exec -- playwright install chromium
+          npm --prefix frontend run test:browser
+      - name: Installed source smoke test
+        run: .venv/bin/python scripts/clean_install_smoke.py --installed
+      - name: Package content checks
+        run: |
+          .venv/bin/python -m build --sdist --no-isolation
+          .venv/bin/python -m build --wheel --no-isolation
+          .venv/bin/python scripts/check_public_release.py --archive dist/reading_room_library-0.1.0.tar.gz
+          .venv/bin/python scripts/check_public_release.py --archive dist/reading_room_library-0.1.0-py3-none-any.whl

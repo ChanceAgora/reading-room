@@ -1,0 +1,36 @@
+[build-system]
+requires = ["hatchling==1.33.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "reading-room-library"
+version = "0.1.0"
+description = "The Reading Room: a local, source-grounded research library"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "Seth Wilson"}]
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+dependencies = ["fastapi>=0.115,<1", "uvicorn>=0.30,<1", "lxml>=5,<7", "numpy>=2,<3", "usearch>=2,<3", "httpx>=0.28,<1", "tiktoken>=0.8,<1", "pillow>=12,<14", "openai>=2.54,<3"]
+
+[project.optional-dependencies]
+pilot = ["sentence-transformers>=5,<6", "sentencepiece>=0.2,<1"]
+legacy-tokenizer = ["transformers>=5,<6", "sentencepiece>=0.2,<1"]
+test = ["pytest>=8,<10"]
+dev = ["build>=1,<2", "hatchling>=1.27,<2", "packaging>=24,<27"]
+
+[project.scripts]
+library = "book_library.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/book_library"]
+artifacts = ["src/book_library/frontend_dist/**"]
+
+[tool.hatch.build]
+exclude = ["**/node_modules", "**/__pycache__", "**/.pytest_cache", "/.venv", "/frontend/test-results", "/frontend/playwright-report"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/.gitignore", "/.github", "/frontend/.gitignore", "/src/book_library", "/frontend/src", "/frontend/public", "/frontend/tests", "/frontend/*.json", "/frontend/*.ts", "/frontend/*.js", "/frontend/.prettierignore", "/frontend/index.html", "/scripts/dev_web.py", "/scripts/export_web_schema.py", "/scripts/test_web_server.py", "/scripts/manage_skills.py", "/scripts/setup.py", "/scripts/run_library.py", "/scripts/check_public_release.py", "/scripts/check_docs.py", "/scripts/clean_install_smoke.py", "/scripts/dependency_notices.py", "/tests", "/bin", "/docs", "/README.md", "/GLOSSARY.md", "/AGENTS.md", "/requirements.lock.txt", "/requirements-dev.lock.txt", "/.agents/skills", "/examples", "/LICENSE", "/NOTICE.md", "/CONTRIBUTING.md", "/SECURITY.md", "/.env.example", "/.release-files.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

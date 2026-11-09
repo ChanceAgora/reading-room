@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bookshare Find"
+  short_description: "Find and compare books before downloading"
+  default_prompt: "Use $bookshare-find to find useful books on this subject and give me a shortlist to review."

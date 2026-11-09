@@ -1,0 +1,12 @@
+{
+  "id": "lectionary-supplement",
+  "name": "Lectionary Supplement",
+  "description": "Fresh interpretive angles across the collection.",
+  "subjects": [
+    "theology",
+    "literature",
+    "art-history"
+  ],
+  "forms": [],
+  "breadth": "exploratory"
+}

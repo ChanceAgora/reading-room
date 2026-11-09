@@ -1,0 +1,5 @@
+# Publish one source repository without private library material
+
+The backend, Reading Room UI, and three acquisition/research skills ship together so a new user can install and inspect one coherent workflow. Books, acquisitions, extracted passages, curation, usage, credentials, and historical research reports remain private data outside the public tree. Explicit Git and package inclusion checks enforce that boundary; a directory being ignored is not evidence that an archive excludes it.
+
+The first release is a macOS source-based technical preview, with Codex as the supported agent host and optional user-level skill links back to the checkout. This keeps installation and development on one path while accepting a Python/Node prerequisite. Generated frontend assets are built locally, and no hosted service, prebuilt installer, or direct ordinary-ChatGPT connection is implied. Core source and original skills/documentation use MIT; user-supplied books and third-party components keep their own rights.
