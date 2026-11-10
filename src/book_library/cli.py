@@ -8,9 +8,10 @@ from .local_server import DEFAULT_PORT, server_address
 def parser():
     p=argparse.ArgumentParser(prog='library',description='Local book research: exact sources, explicit connections.')
     p.add_argument('--root',type=Path); sub=p.add_subparsers(dest='command',required=True)
-    from . import onboarding, paid_cli
+    from . import correction_cli, onboarding, paid_cli
     onboarding.add_parsers(sub)
     paid_cli.add_parsers(sub)
+    correction_cli.add_parser(sub)
     sync=sub.add_parser('sync'); sync.add_argument('--path'); sync.add_argument('--rebuild',action='store_true'); sync.add_argument('--exact',action='store_true',help='Update exact index only; leave semantic work pending')
     intake=sub.add_parser('intake',help='Prepare a book using your saved optional AI choices')
     intake.add_argument('action',nargs='?',choices=['add','status','pause','resume','undo','review'],default='add')
@@ -37,6 +38,11 @@ def parser():
     cite.add_argument('--segment',help='First source block ID of a separately credited portion; see component_citations')
     sub.add_parser('status')
     books=sub.add_parser('books'); books.add_argument('query',nargs='?',default=''); books.add_argument('--limit',type=int,default=50); books.add_argument('--offset',type=int,default=0)
+    browse=sub.add_parser('browse',help='Browse the shelves like the interface: sort, filter, or list books with one classification')
+    browse.add_argument('query',nargs='?',default='',help='Title or creator text')
+    browse.add_argument('--filter',action='append',default=[],help='subject=VALUE, form=VALUE, or author=VALUE; repeatable')
+    browse.add_argument('--classification',help='FACET=VALUE from `taxonomy list`, e.g. themes=water; not combined with query or filters')
+    browse.add_argument('--sort',choices=['title','creator'],default='title'); browse.add_argument('--limit',type=int,default=50); browse.add_argument('--offset',type=int,default=0)
     book=sub.add_parser('book'); book.add_argument('id'); book.add_argument('--section-offset',type=int,default=0); book.add_argument('--section-limit',type=int,default=100)
     focus=sub.add_parser('focus'); focus.add_argument('action',choices=['list','show','set']); focus.add_argument('id',nargs='?'); focus.add_argument('--value'); focus.add_argument('--file',type=Path)
     annotate=sub.add_parser('annotate'); annotate.add_argument('target'); annotate.add_argument('--field',required=True); annotate.add_argument('--value',required=True); annotate.add_argument('--evidence',required=True); annotate.add_argument('--origin',choices=['user','codex','import'],default='user'); annotate.add_argument('--status',choices=['provisional','confirmed','disputed'],default='confirmed')
@@ -48,11 +54,38 @@ def parser():
     return p
 
 
+BROWSE_FILTERS=('subject','form','author')
+
+
+def _pairs(values,allowed,usage):
+    pairs={}
+    for value in values:
+        key,sep,item=value.partition('=')
+        if not sep or not item or key not in allowed: raise ValueError(usage)
+        pairs[key]=item
+    return pairs
+
+
+def browse(lib,args):
+    """The shelves page (browse_books) or a classification's books (facet_books)."""
+    if args.classification:
+        if args.query or args.filter: raise ValueError('Use --classification alone; it lists every book with that classification.')
+        from .service import FACETS
+        from .taxonomy import facet_books
+        facet,value=next(iter(_pairs([args.classification],FACETS,'Classification syntax: FACET=VALUE, where FACET is one of '+', '.join(sorted(FACETS))+'.').items()))
+        return facet_books(lib,facet,value,offset=args.offset,limit=args.limit,sort=args.sort)
+    filters=_pairs(args.filter,BROWSE_FILTERS,'Browse filter syntax: subject=VALUE, form=VALUE, or author=VALUE.')
+    return lib.browse_books(args.query,facet=filters or None,sort=args.sort,limit=args.limit,offset=args.offset)
+
+
 def run(args):
     lib=Library(args.root)
     if args.command in {'init','doctor','demo','autostart'}:
         from . import onboarding
         return onboarding.run(args,lib)
+    if args.command=='correction':
+        from . import correction_cli
+        return correction_cli.run(lib,args)
     if args.command in {'semantic','review','budget'}:
         from . import paid_cli
         return paid_cli.run(lib,args)
@@ -89,6 +122,7 @@ def run(args):
         case 'cite-selection': return lib.cite_selection(args.selection_id,locator=json.loads(args.locator) if args.locator else None)
         case 'cite': return lib.cite(args.passage_id,locator=json.loads(args.locator) if args.locator else None,segment_id=args.segment)
         case 'books': return lib.books(args.query,limit=args.limit,offset=args.offset)
+        case 'browse': return browse(lib,args)
         case 'book': return lib.book(args.id,args.section_offset,args.section_limit)
         case 'focus':
             if args.action=='list': return lib.focuses()
