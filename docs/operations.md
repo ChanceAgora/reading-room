@@ -106,7 +106,7 @@ The exact rebuild preserves original books and durable editorial history. Do not
 | Library path is missing or wrong | Run `doctor`; check `--root`, `LIBRARY_ROOT`, and `.reading-room/local.json` in that precedence order. |
 | Address already in use | Check `autostart status`; stop the intended process or choose another loopback port. Do not kill an unknown process blindly. `library app` reuses a server already running for the same library. |
 | Reading Room.app does nothing or shows an alert | Read `.reading-room/app.log`. If the log says “Operation not permitted”, allow **Reading Room** under Privacy & Security → Files and Folders. Rerun `./bin/setup` if the app is missing. |
-| Intake remains queued | Keep `serve` running. The development API and demo do not run production intake work. Refresh status explicitly. |
+| Intake remains queued | Keep the Reading Room open (Reading Room.app, `library app`, or `serve`). The development API and demo do not run production intake work. Refresh status explicitly. |
 | Text works but semantic results are absent | Check `semantic status`, coverage, authorization, credential readiness, and accepted budget. Enablement alone does not build the index. |
 | Review did not run | Check the intake's saved permission, not only the current future-import default. Use `intake review INTAKE_ID` for a deliberate later review. |
 | Budget/provider pause persists | Inspect the reason and remaining allowance; fix the cause and explicitly resume. A new month does not automatically resume a paused job. |

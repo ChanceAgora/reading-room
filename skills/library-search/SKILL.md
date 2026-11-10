@@ -18,10 +18,12 @@ saved setup binding, then `~/Documents/Reading Room`. Do not guess a personal pa
 is shared across projects; a book's original purpose does not restrict later
 use. Leave original books unchanged. Private records live in the root's `.library`.
 
-The browser normally uses `http://127.0.0.1:18765`; consult diagnostics for a
-custom address. Login startup is optional. Reuse an existing service or run
-`library serve` (browser) or `library app` (native window, which reuses a running server) when needed, avoiding duplicate servers. The CLI works without
-the browser. Neither skill invocation nor an available key authorizes AI setup.
+The interface normally uses `http://127.0.0.1:18765`; consult diagnostics for a
+custom address. Login startup is optional. Intake work needs a running service:
+reuse an existing one, or start `library serve` (browser) or `library app`
+(native window, which reuses a running server), avoiding duplicate servers.
+Search, reading, citations, and corrections work without it. Neither skill
+invocation nor an available key authorizes AI setup.
 
 ## Search a changing shelf
 
